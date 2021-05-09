@@ -1,10 +1,4 @@
-Orgs:4
+Orgs:1
 OrgID:1
-OrgID:2
-OrgID:3
-OrgID:4
-CAOrgs:4
-Peers:2
-Peers:2
-Peers:2
+CAOrgs:1
 Peers:2
