@@ -248,6 +248,10 @@ affiliations:
       - department2
    org2:
       - department1
+   org3:
+      - department1
+   org4:
+      - department1
 
 #############################################################################
 #  Signing section
@@ -318,7 +322,7 @@ csr:
         O: Hyperledger
         OU: Fabric
    hosts:
-     - 998c0b67fb9c
+     - 29e0c86b8b66
      - localhost
    ca:
       expiry: 131400h

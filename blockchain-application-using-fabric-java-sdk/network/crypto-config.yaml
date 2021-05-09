@@ -107,16 +107,32 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   # Org3: See "Org1" for full specification
   # ---------------------------------------------------------------------------
-  #- Name: Org3
-  #  Domain: org3.example.com
-  #  EnableNodeOUs: true
-  #  CA:
-  #      Country: US
-  #      Province: California
-  #      Locality: San Francisco
-  #  # CA:
-  #  #    Hostname: ca # implicitly ca.org2.example.com
-  #  Template:
-  #    Count: 3
-  #  Users:
-  #    Count: 1
+  - Name: Org3
+    Domain: org3.example.com
+    EnableNodeOUs: true
+    CA:
+        Country: US
+        Province: California
+        Locality: San Francisco
+    # CA:
+    #    Hostname: ca # implicitly ca.org3.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  # ---------------------------------------------------------------------------
+  # Org4: See "Org1" for full specification
+  # ---------------------------------------------------------------------------
+  - Name: Org4
+    Domain: org4.example.com
+    EnableNodeOUs: true
+    CA:
+        Country: US
+        Province: California
+        Locality: San Francisco
+    # CA:
+    #    Hostname: ca # implicitly ca.org4.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1

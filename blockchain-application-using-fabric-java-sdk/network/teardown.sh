@@ -4,7 +4,7 @@
 set -ev
 
 # Shut down the Docker containers for the system tests.
-docker-compose -f docker-compose.yml kill && docker-compose -f docker-compose.yml down
+docker-compose -f docker-compose-main.yml kill && docker-compose -f docker-compose-main.yml down
 if [ "$(docker ps -aq)" ]; then
 	docker rm -f $(docker ps -aq)
 fi
