@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.HashSet;
@@ -78,6 +79,7 @@ public class IXPExecutionThread<K, V> implements Runnable {
 		boolean terminated = false;
 		boolean addedHeaders = false;
 		int clientExecution = 0;
+		int lastBlock = 3;
 
 		// Streams to communicate with the AS
 		ObjectInputStream ois = null;
@@ -147,10 +149,6 @@ public class IXPExecutionThread<K, V> implements Runnable {
 				bcContext.createUserContext();
 				bcContext.createChannel();
 				bcContext.createPeer();
-
-				// Create csv file to write the elapsed time values
-				csvWriter.createFile("ixp" + ixpID + "_connection" + numConnections + "_execution" + clientExecution + ".csv");
-				addedHeaders = false;
 
 				// Bgp entries counters
 				int bcEntries = 0;
@@ -235,10 +233,14 @@ public class IXPExecutionThread<K, V> implements Runnable {
 				clientExecution++;
 				
 				if (!(bgpEntry.equalsIgnoreCase("exit") || bgpEntry.equalsIgnoreCase("print"))) {
+
+					// Create csv file to write the elapsed time values
+					csvWriter.createFile("ixp" + ixpID + "_connection" + numConnections + "_execution" + clientExecution + ".csv");
+					addedHeaders = false;
 					
-					// Add headers to the csv file
+					// Add headers to the csv file (do it only the first time, hence the boolean)
 					if (!addedHeaders) {
-						csvWriter.addHeaders(totalNumLines);
+						csvWriter.addHeaders(totalNumLines, 1);
 						addedHeaders = true;
 					}
 
@@ -248,7 +250,7 @@ public class IXPExecutionThread<K, V> implements Runnable {
 					int lastSeqNum = 0;
 					while (this.sequenceNumber.get() != totalNumLines) {
 						
-						//If certain time passes, exit the cycle
+						//If a certain time passes, exit the cycle
 						if(timer == 60) {
 							break;
 						}
@@ -287,6 +289,15 @@ public class IXPExecutionThread<K, V> implements Runnable {
 					//EVENT HANDLING------------------------------------------------------------------------------------------------------------
 					EnvelopeInfo correctEnvelope;
 					boolean fileUpdate = false;
+
+					//Stuff for block commits
+					HashMap<Long, Integer> blockCommits = new HashMap<Long, Integer>();
+					CsvWriter commitCountWriter = new CsvWriter();
+					commitCountWriter.createFile("BlockCommitCounting.csv");
+					int numBlocks = (int) ((Math.floor((chaincodeEvents.size() * 2) / 10.0) + Math.ceil(((chaincodeEvents.size() * 2) % 10) / 10.0)));
+					commitCountWriter.addHeaders(numBlocks, 2);
+
+					System.out.println("NumBlocks is: " + numBlocks);
 					
 					//Loop to go through all the events and find the envelope that matches said event
 					for (ChaincodeEventCapture chaincodeEventCapture : chaincodeEvents) {
@@ -298,6 +309,9 @@ public class IXPExecutionThread<K, V> implements Runnable {
 							System.out.println("Error reading the events. Something went wrong.");
 							continue;
 						}
+
+						//Count the commits per block and add them to the hashmap
+						chaincodeEventCapture.getCommitsPerBlock(blockCommits);
 
 						//Elapsed time to be written to the file
 						long timeDiff = correctEnvelope.getTimestamp().getTime() - initialTimestamp.getTime();
@@ -341,6 +355,7 @@ public class IXPExecutionThread<K, V> implements Runnable {
 
 						chaincodeEvents.remove(chaincodeEventCapture);
 					}
+					System.out.println(Arrays.asList(blockCommits)); //TODO: for testing
 					//--------------------------------------------------------------------------------------------------------------------------
 
 					//End timer to count the time it takes to process all transactions
@@ -349,11 +364,30 @@ public class IXPExecutionThread<K, V> implements Runnable {
 					//Get difference of two nanoTime values
 					long timeElapsed = endTime - startTime;
 
-					//Write total time elapsed, plus all the counters, to the file
+					//Write total time elapsed, plus all the counters, to the file, and the block commits to the second file
 					try {
 						this.csvSemaphore.acquire();
-						this.csvWriter.addValue("TT" + String.valueOf(timeElapsed / 1000000) + "," + String.valueOf(bcEntries) + 
-												"," + String.valueOf(rtEntries) + "," + String.valueOf(maliciousEntries), true);
+						this.csvWriter.addValue(String.valueOf(timeElapsed / 1000000) + "," 
+												+ String.valueOf(totalEntriesRT) + "," + String.valueOf(bcEntries) + "," 
+												+ String.valueOf(rtEntries) + "," + String.valueOf(maliciousEntries), true);
+						
+						for(long i = lastBlock; i < (numBlocks + lastBlock); i++) {
+							int aux;
+							if(blockCommits.get(i) == null) {
+								aux = 0;
+							} else {
+								aux = blockCommits.get(i);
+							}
+
+							if(i == (numBlocks + lastBlock - 1)) {
+								commitCountWriter.addValue(String.valueOf(aux), true);
+							} else {
+								commitCountWriter.addValue(String.valueOf(aux), false);
+							}
+						}
+
+						lastBlock += numBlocks;
+
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

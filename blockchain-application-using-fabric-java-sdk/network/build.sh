@@ -5,11 +5,11 @@ set -e
 
 #Start from here
 echo -e "\nStopping the previous network (if any)"
-docker-compose -f docker-compose-main.yml down
+docker-compose -f docker-compose1.yml down
 
 # Create and Start the Docker containers for the network
 echo -e "\nSetting up the Hyperledger Fabric 1.4.1 network"
-docker-compose -f docker-compose-main.yml up -d
+docker-compose -f docker-compose1.yml up -d
 sleep 15
 echo -e "\nNetwork setup completed!!\n"
 

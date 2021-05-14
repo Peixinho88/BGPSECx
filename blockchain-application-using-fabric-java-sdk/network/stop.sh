@@ -4,4 +4,4 @@
 set -ev
 
 # Shut down the Docker containers that might be currently running.
-docker-compose -f docker-compose-main.yml stop
+docker-compose -f docker-compose1.yml stop

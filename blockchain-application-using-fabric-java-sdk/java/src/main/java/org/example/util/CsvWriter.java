@@ -24,15 +24,30 @@ public class CsvWriter {
         }
     }
 
-    public void addHeaders(int numLines) {
-        for (int i = 0; i < numLines; i++) {
-            this.sb.append("Tx" + (i+1));
-            this.sb.append(',');
+    public void addHeaders(int numLines, int type) {
+        
+        if(type == 1) {
+            for (int i = 0; i < numLines; i++) {
+                this.sb.append("Tx" + (i+1));
+                this.sb.append(',');
+            }
+            sb.append("TotalTime,");
+            sb.append("TotalEntries,");
+            sb.append("BlockchainEntries,");
+            sb.append("RoutingTableEntries,");
+            sb.append("MaliciousEntries\n");
         }
-        sb.append("TotalTime,");
-        sb.append("BlockchainEntries,");
-        sb.append("RoutingTableEntries,");
-        sb.append("MaliciousEntries\n");
+        else if(type == 2) {
+            for (int i = 0; i < numLines; i++) {
+                if(i == (numLines - 1)) {
+                    this.sb.append("Block" + i + "\n");
+                } else {
+                    this.sb.append("Block" + i);
+                    this.sb.append(',');
+                }
+            }
+        }
+
         try {
             this.writer.write(sb.toString());
             this.writer.flush();

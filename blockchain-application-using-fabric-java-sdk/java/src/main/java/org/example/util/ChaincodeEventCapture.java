@@ -1,5 +1,7 @@
 package main.java.org.example.util;
 
+import java.util.HashMap;
+
 import org.hyperledger.fabric.sdk.BlockEvent;
 import org.hyperledger.fabric.sdk.BlockInfo.EnvelopeInfo;
 import org.hyperledger.fabric.sdk.ChaincodeEvent;
@@ -46,5 +48,21 @@ public class ChaincodeEventCapture {
       }
     }
     return null;
+  }
+
+  public void getCommitsPerBlock(HashMap<Long, Integer> blocks) {
+    
+    long blockKey = this.blockEvent.getBlockNumber();
+    System.out.println("BLOCK NUMBER IS: " + blockKey);
+    int commits = 0;
+
+    if(blocks.get(blockKey) == null) {
+      for(EnvelopeInfo info : this.blockEvent.getEnvelopeInfos()) {
+        if(info.isValid()) {
+          commits++;
+        }
+      }
+      blocks.put(blockKey, commits);
+    }
   }
 }

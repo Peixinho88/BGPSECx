@@ -29,10 +29,18 @@ services:
       - custom
 
     extra_hosts:
-      - "ca.org2.example.com:192.168.1.184"
-      - "peer0.org2.example.com:192.168.1.184"
-      - "peer1.org2.example.com:192.168.1.184"
-      - "cli:192.168.1.184" 
+      - "ca.org2.example.com:192.168.191.134"
+      - "peer0.org2.example.com:192.168.191.134"
+      - "peer1.org2.example.com:192.168.191.134"
+      - "cli:192.168.191.134"
+      - "ca.org3.example.com:192.168.1.189"
+      - "peer0.org3.example.com:192.168.1.189"
+      - "peer1.org3.example.com:192.168.1.189"
+      - "cli:192.168.1.189"
+      - "ca.org4.example.com:192.168.153.129"
+      - "peer0.org4.example.com:192.168.153.129"
+      - "peer1.org4.example.com:192.168.153.129"
+      - "cli:192.168.153.129" 
 
   orderer.example.com:
     container_name: orderer.example.com
@@ -63,10 +71,18 @@ services:
         - ../network_resources/crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/:/etc/hyperledger/msp/peerOrg3
         - ../network_resources/crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/:/etc/hyperledger/msp/peerOrg4
     extra_hosts:
-      - "ca.org2.example.com:192.168.1.184"
-      - "peer0.org2.example.com:192.168.1.184"
-      - "peer1.org2.example.com:192.168.1.184" 
-      - "cli:192.168.1.184"
+      - "ca.org2.example.com:192.168.191.134"
+      - "peer0.org2.example.com:192.168.191.134"
+      - "peer1.org2.example.com:192.168.191.134"
+      - "cli:192.168.191.134"
+      - "ca.org3.example.com:192.168.1.189"
+      - "peer0.org3.example.com:192.168.1.189"
+      - "peer1.org3.example.com:192.168.1.189"
+      - "cli:192.168.1.189"
+      - "ca.org4.example.com:192.168.153.129"
+      - "peer0.org4.example.com:192.168.153.129"
+      - "peer1.org4.example.com:192.168.153.129"
+      - "cli:192.168.153.129" 
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -104,10 +120,18 @@ services:
     depends_on:
       - orderer.example.com
     extra_hosts:
-      - "ca.org2.example.com:192.168.1.184"
-      - "peer0.org2.example.com:192.168.1.184"
-      - "peer1.org2.example.com:192.168.1.184"
-      - "cli:192.168.1.184"
+      - "ca.org2.example.com:192.168.191.134"
+      - "peer0.org2.example.com:192.168.191.134"
+      - "peer1.org2.example.com:192.168.191.134"
+      - "cli:192.168.191.134"
+      - "ca.org3.example.com:192.168.1.189"
+      - "peer0.org3.example.com:192.168.1.189"
+      - "peer1.org3.example.com:192.168.1.189"
+      - "cli:192.168.1.189"
+      - "ca.org4.example.com:192.168.153.129"
+      - "peer0.org4.example.com:192.168.153.129"
+      - "peer1.org4.example.com:192.168.153.129"
+      - "cli:192.168.153.129" 
 
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
@@ -142,10 +166,18 @@ services:
     depends_on:
       - orderer.example.com
     extra_hosts:
-      - "ca.org2.example.com:192.168.1.184"
-      - "peer0.org2.example.com:192.168.1.184"
-      - "peer1.org2.example.com:192.168.1.184"
-      - "cli:192.168.1.184"
+      - "ca.org2.example.com:192.168.191.134"
+      - "peer0.org2.example.com:192.168.191.134"
+      - "peer1.org2.example.com:192.168.191.134"
+      - "cli:192.168.191.134"
+      - "ca.org3.example.com:192.168.1.189"
+      - "peer0.org3.example.com:192.168.1.189"
+      - "peer1.org3.example.com:192.168.1.189"
+      - "cli:192.168.1.189"
+      - "ca.org4.example.com:192.168.153.129"
+      - "peer0.org4.example.com:192.168.153.129"
+      - "peer1.org4.example.com:192.168.153.129"
+      - "cli:192.168.153.129" 
 
   cli:
     container_name: cli
@@ -174,9 +206,18 @@ services:
       - 7061:8888
       - 7064:9999
     extra_hosts:
-      - "ca.org2.example.com:192.168.1.184"
-      - "peer0.org2.example.com:192.168.1.184"
-      - "peer1.org2.example.com:192.168.1.184" 
+      - "ca.org2.example.com:192.168.191.134"
+      - "peer0.org2.example.com:192.168.191.134"
+      - "peer1.org2.example.com:192.168.191.134"
+      - "cli:192.168.191.134"
+      - "ca.org3.example.com:192.168.1.189"
+      - "peer0.org3.example.com:192.168.1.189"
+      - "peer1.org3.example.com:192.168.1.189"
+      - "cli:192.168.1.189"
+      - "ca.org4.example.com:192.168.153.129"
+      - "peer0.org4.example.com:192.168.153.129"
+      - "peer1.org4.example.com:192.168.153.129"
+      - "cli:192.168.153.129" 
 
     command: /bin/bash
     volumes:

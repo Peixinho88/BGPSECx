@@ -2462,7 +2462,7 @@ func (s *SmartContract) announceVerifiedTreePath(APIstub shim.ChaincodeStubInter
 		possiblePrefixes = getAllPossiblePrefixesIPv6(APIstub, realIPFull)
 	}
 
-	//var verifiedNotInserted bool
+	var verifiedNotInserted bool
 	var verified bool
 	var foundTree bool
 	var finalTree BGPTree
@@ -2517,16 +2517,19 @@ func (s *SmartContract) announceVerifiedTreePath(APIstub shim.ChaincodeStubInter
 		}
 
 		//Check if inserted path is exactly the same as in the blockchain
-		//if !verified && foundTree {
-		//	fmt.Println("path is the same as in the tree")
-		//	var allPathsLocal = make([]string, nodeCounting(finalTree))
-		//	allPathsLocal = queryTreeImproved(finalTree, args[1], allPathsLocal, 0, true)
-		//	for i := 0; i < len(allPathsLocal); i++ {
-		//		if allPathsLocal[i] == args[1] {
-		//			verifiedNotInserted = true
-		//		}
-		//	}
-		//}
+		if !verified && foundTree {
+			fmt.Println("path is the same as in the tree")
+			var allPathsLocal = make([]string, nodeCounting(finalTree))
+			var path string
+			allPathsLocal = queryTreeImproved(finalTree, path, allPathsLocal, 0, true)
+			fmt.Printf("%+q", allPathsLocal)
+			fmt.Println(args[1])
+			for i := 0; i < len(allPathsLocal); i++ {
+				if allPathsLocal[i] == args[1] {
+					verifiedNotInserted = true
+				}
+			}
+		}
 	}
 
 	if verified {
@@ -2557,13 +2560,15 @@ func (s *SmartContract) announceVerifiedTreePath(APIstub shim.ChaincodeStubInter
 		byteReturn := append([]byte("V | "+finalCompositeKey+" | "+args[0]+" | "+args[1]+" | "), finalTreeAsBytes...)
 		return shim.Success(byteReturn)
 	} else {
-		//if verifiedNotInserted {
-		//	return shim.Success([]byte("V | Blockchain wasn't altered."))
-		//} else {
-		s := []byte(args[0] + "»" + args[1] + "»U»" + args[2])
-		APIstub.SetEvent("UpdateBGP", s)
-		return shim.Success([]byte("U | Blockchain wasn't altered."))
-		//}
+		if verifiedNotInserted {
+			s := []byte(args[0] + "»" + args[1] + "»V»" + args[2])
+			APIstub.SetEvent("UpdateBGP", s)
+			return shim.Success([]byte("V | Blockchain wasn't altered."))
+		} else {
+			s := []byte(args[0] + "»" + args[1] + "»U»" + args[2])
+			APIstub.SetEvent("UpdateBGP", s)
+			return shim.Success([]byte("U | Blockchain wasn't altered."))
+		}
 	}
 }
 
